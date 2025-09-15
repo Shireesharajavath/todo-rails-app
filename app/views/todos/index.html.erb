@@ -1,0 +1,46 @@
+<h1>All Todos</h1>
+
+<table border="1" cellpadding="5" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Completed</th>
+      <th>Scheduled Time</th>
+      <th>Expected Completion</th>
+      <th>Priority</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @todos.each do |todo| %>
+      <tr>
+        <td><%= todo.title %></td>
+        <td><%= todo.description %></td>
+        <td><%= todo.completed ? "Yes" : "No" %></td>
+        <td>
+          <%= todo.scheduled_time.present? ? todo.scheduled_time.strftime("%d-%m-%Y %H:%M") : "-" %>
+        </td>
+        <td>
+          <%= todo.expected_completion.present? ? todo.expected_completion.strftime("%d-%m-%Y %H:%M") : "-" %>
+        </td>
+        <td><%= todo.priority.presence || "-" %></td>
+        <td><%= todo.status.presence || "-" %></td>
+        <td>
+          <%= link_to "Show", todo_path(todo) %> |
+          <%= link_to "Edit", edit_todo_path(todo) %> |
+          <%= button_to "Delete", todo_path(todo),
+                        method: :delete,
+                        data: { confirm: "Are you sure?" },
+                        form: { style: "display:inline" } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to "Add New Todo", new_todo_path, class: "button" %>

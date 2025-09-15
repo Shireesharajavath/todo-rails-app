@@ -1,0 +1,56 @@
+<%= form_with(model: todo) do |form| %>
+  <% if todo.errors.any? %>
+    <div style="color: red; margin-bottom: 20px;">
+      <h2><%= pluralize(todo.errors.count, "error") %> prohibited this todo from being saved:</h2>
+      <ul>
+        <% todo.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <h3>Basic Details</h3>
+  <div style="margin-bottom: 15px;">
+    <%= form.label :title %><br>
+    <%= form.text_field :title, placeholder: "Enter title" %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :description %><br>
+    <%= form.text_area :description, placeholder: "Enter description" %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :completed %><br>
+    <%= form.check_box :completed %> Completed
+  </div>
+
+  <h3>Schedule Info</h3>
+  <div style="margin-bottom: 15px;">
+    <%= form.label :scheduled_time %><br>
+    <%= form.datetime_select :scheduled_time %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :expected_completion %><br>
+    <%= form.datetime_select :expected_completion %>
+  </div>
+
+  <h3>Extra Details</h3>
+  <div style="margin-bottom: 15px;">
+    <%= form.label :priority %><br>
+    <%= form.select :priority, ["High", "Medium", "Low"], include_blank: true %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :status %><br>
+    <%= form.select :status, ["Pending", "In Progress", "Completed"], include_blank: true %>
+  </div>
+
+
+
+  <div>
+    <%= form.submit "Save", style: "padding: 10px 20px; background-color: #28a745; color: white; border: none;" %>
+  </div>
+<% end %>
