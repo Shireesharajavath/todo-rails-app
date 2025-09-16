@@ -1,22 +1,18 @@
 class TodosController < ApplicationController
- 
   skip_before_action :verify_authenticity_token
 
   before_action :authenticate_user
   before_action :set_todo, only: [:show, :update, :destroy]
 
-  
   def index
     todos = current_user.todos
     render json: todos
   end
 
-  
   def show
     render json: @todo
   end
 
- 
   def create
     todo = current_user.todos.new(todo_params)
     if todo.save
@@ -26,7 +22,6 @@ class TodosController < ApplicationController
     end
   end
 
-  
   def update
     if @todo.update(todo_params)
       render json: { message: "Todo updated successfully", todo: @todo }, status: :ok
@@ -35,7 +30,6 @@ class TodosController < ApplicationController
     end
   end
 
-  
   def destroy
     if @todo
       @todo.destroy
@@ -67,18 +61,17 @@ class TodosController < ApplicationController
     )
   end
 
+
   def authenticate_user
     auth_header = request.headers["Authorization"]
-    if auth_header.present? && auth_header =~ /^Token token=(.+)$/
+
+    if auth_header.present? && auth_header =~ /\ABearer\s+(.+)\z/i
       token = Regexp.last_match(1)
       @current_user = User.find_by(api_key: token)
-    elsif session[:user_id]
-      @current_user = User.find_by(id: session[:user_id])
     end
 
     unless @current_user
       render json: { error: "Unauthorized" }, status: :unauthorized
-      return 
     end
   end
 
