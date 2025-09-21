@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_13_144017) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_19_093310) do
+  create_table "todo_time_logs", force: :cascade do |t|
+    t.integer "todo_id", null: false
+    t.datetime "start_at", null: false
+    t.datetime "end_at"
+    t.integer "duration_seconds"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["todo_id"], name: "index_todo_time_logs_on_todo_id"
+  end
+
   create_table "todos", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -25,6 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_13_144017) do
     t.text "notes"
     t.string "tags"
     t.integer "user_id"
+    t.integer "time_spent_seconds", default: 0
     t.index ["user_id"], name: "index_todos_on_user_id"
   end
 
@@ -37,5 +48,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_13_144017) do
     t.string "password_digest"
   end
 
+  add_foreign_key "todo_time_logs", "todos"
   add_foreign_key "todos", "users"
 end
