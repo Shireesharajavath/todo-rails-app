@@ -1,7 +1,7 @@
 import axios from "axios";
 import { rpc } from "./rpc_config.js";
 
-// ---------------- TODO CRUD ----------------
+/**************** TODOS RPCs ****************/
 
 rpc.register({
   name: "fetchTodos",
@@ -107,6 +107,112 @@ rpc.register({
   },
 });
 
+rpc.register({
+  name:"login",
+  arguments: {
+    api_key: { type: "string", required: false },
+    email: { type: "string", required: true },
+    password: { type: "string", required: true },
+  },
+  implementation: async (args) => {
+    try {
+      const res = await axios.post("http://localhost:3000/login", {
+        api_key: args.api_key,
+        email: args.email,
+        password: args.password,
+      });
+      if (res.data.success && res.data.api_key) {
+        return { success: true, api_key: res.data.api_key };  
+      } else {
+        return { success: false, error: res.data.error || "Login failed" };
+      }
+    } catch (err) {
+      return { success: false, error: err.response?.data || err.message };
+    }
+  },
+});
+
+rpc.register({
+  name: "signup",
+  arguments: {
+    email: { type: "string", required: true },
+    password: { type: "string", required: true },
+  },
+  implementation: async (args) => {
+    try {
+      const res = await axios.post("http://localhost:3000/signup", {
+        email: args.email,
+        password: args.password,
+      });
+      if (res.data.success && res.data.api_key) {
+        return { success: true, api_key: res.data.api_key };
+      } else {
+        return { success: false, error: res.data.error || "Signup failed" };
+      }
+    } catch (err) {
+      return { success: false, error: err.response?.data || err.message };
+    }
+  },
+});
+
+  rpc.register({
+  name: "getApiKey",
+  arguments: {
+    email: { type: "string", required: true },
+    password: { type: "string", required: true },
+  },
+  implementation: async (args) => {
+    try {
+      const res = await axios.post("http://localhost:3000/get_api_key", {
+        email: args.email,
+        password: args.password,
+      });
+      if (res.data.success && res.data.api_key) {
+        return { success: true, api_key: res.data.api_key };
+      } else {
+        return { success: false, error: res.data.error || "Failed to get API key" };
+      }
+    } catch (err) {
+      return { success: false, error: err.response?.data || err.message };
+    }
+  },
+});
+
+rpc.register({
+  name: "getUsers",
+  arguments: {
+    api_key: { type: "string", required: true },
+  },
+  implementation: async (args) => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/users", {
+        headers: { Authorization: `Bearer ${args.api_key}` },
+      });
+
+      return { success: true, users: res.data.users };
+    } catch (err) {
+      return { success: false, error: err.response?.data || err.message };
+    }
+  },
+});
+
+
+// LOGOUT RPC
+rpc.register({
+  name: "logout",
+  arguments: {},
+  implementation: async () => {
+    try {
+      // Just clear frontend state (API key) in Retool
+      return {
+        success: true,
+        message: "Logout successful",
+      };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  },
+});
 
 rpc.register({
   name: "getApiKeyByEmail",

@@ -1,21 +1,29 @@
-
 class SessionsController < ApplicationController
-  def new
-  end
+  # Skip API authentication & CSRF for login
+  skip_before_action :authenticate_user, only: [:create]
+  skip_before_action :verify_authenticity_token, only: [:create]
 
+  # POST /login (API only)
   def create
-    user = User.find_by(email: params[:email])
-    if user&.authenticate(params[:password])
-      session[:user_id] = user.id
-      redirect_to todos_path, notice: "Logged in successfully"
+    email = params[:email].to_s.downcase.strip
+    password = params[:password]
+
+    user = User.find_by(email: email)
+
+    if user&.authenticate(password)
+      render json: {
+        success: true,
+        message: "Login successful",
+        api_key: user.api_key
+      }, status: :ok
     else
-      flash.now[:alert] = "Invalid email or password"
-      render :new
+      render json: { success: false, error: "Invalid email or password" }, status: :unauthorized
     end
   end
 
+  # DELETE /logout (API only, optional)
   def destroy
-    session[:user_id] = nil
-    redirect_to login_path, notice: "Logged out"
+    # API lo session use cheyyam → just dummy response
+    render json: { success: true, message: "Logged out" }, status: :ok
   end
 end

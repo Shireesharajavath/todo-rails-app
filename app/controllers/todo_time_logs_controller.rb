@@ -1,12 +1,12 @@
 class TodoTimeLogsController < ApplicationController
-  skip_before_action :verify_authenticity_token   # Allows API calls from Postman
+  skip_before_action :verify_authenticity_token  
 
   def start
-    todo = Todo.find(params[:todo_id])            # Find the Todo by ID
-    log = todo.todo_time_logs.create!(            # Create a new time log
+    todo = Todo.find(params[:todo_id])          
+    log = todo.todo_time_logs.create!(           
       start_at: Time.current
     )
-    render json: { success: true, log_id: log.id } # Respond with new log ID
+    render json: { success: true, log_id: log.id } 
   end
 
   def stop
