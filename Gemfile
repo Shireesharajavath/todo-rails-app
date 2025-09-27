@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Rails
-gem "rails", "~> 8.0.2", ">= 8.0.2.1"
+gem "rails", "~> 8.0.3"
 
 # Asset pipeline
 gem "propshaft"
