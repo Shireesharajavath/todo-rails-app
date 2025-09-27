@@ -11,10 +11,12 @@ Rails.application.routes.draw do
     post "login",       to: "users#login"        # API login
     post "get_api_key", to: "users#get_api_key"  # Generate/retrieve API key
     get  "me",          to: "users#me"           # Current authenticated user
-    get "todos",       to: "todos#index"         # List todos
-    
-    # New route to fetch all signup users
-    get  "users",       to: "users#index"
+
+    # ✅ RESTful todos (for API)
+    resources :todos, only: [:index]
+
+    # ✅ RESTful users (adds POST /api/users, GET /api/users/:id, etc.)
+    resources :users, only: [:create, :index, :show]
   end
 
   # ---------- Todo time logs ----------

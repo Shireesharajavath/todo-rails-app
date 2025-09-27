@@ -28,6 +28,9 @@ gem "bcrypt", "~> 3.1.7"
 # CORS (allow Retool / RPC backend to call your API)
 gem "rack-cors"
 
+# Pagination
+gem "kaminari"   # ✅ added for server-side pagination
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

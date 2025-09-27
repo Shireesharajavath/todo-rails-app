@@ -2,8 +2,8 @@
 module Api
   class UsersController < ApplicationController
     # API endpoints don’t use session auth or CSRF
-    skip_before_action :authenticate_user, only: [:signup, :login, :get_api_key,:index]
-    skip_before_action :verify_authenticity_token, only: [:signup, :login, :get_api_key, :me, :index]
+    skip_before_action :authenticate_user, only: [:signup, :login, :get_api_key, :index, :create, :show]
+    skip_before_action :verify_authenticity_token, only: [:signup, :login, :get_api_key, :me, :index, :create, :show]
 
     # POST /api/signup
     def signup
@@ -61,13 +61,52 @@ module Api
       }, status: :ok
     end
 
-    # GET /api/users
+    # ✅ GET /api/users (with pagination)
     def index
-      users = User.all.select(:id, :name, :email, :created_at, :updated_at)
+      users = User.order(created_at: :desc)
+                  .page(params[:page] || 1)
+                  .per(params[:per_page] || 10)
+
       render json: {
         success: true,
-        users: users
+        users: users.as_json(only: [:id, :name, :email, :created_at, :updated_at]),
+        pagination: {
+          current_page: users.current_page,
+          next_page: users.next_page,
+          prev_page: users.prev_page,
+          total_pages: users.total_pages,
+          total_count: users.total_count
+        }
       }, status: :ok
+    end
+
+    # ✅ POST /api/users
+    def create
+      user = User.new(user_params)
+      user.api_key ||= SecureRandom.hex(32) # assign if not already set
+
+      if user.save
+        render json: {
+          success: true,
+          message: "User created successfully",
+          user: user.slice(:id, :name, :email, :api_key)
+        }, status: :created
+      else
+        render json: { success: false, errors: user.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
+    # ✅ GET /api/users/:id
+    def show
+      user = User.find_by(id: params[:id])
+      if user
+        render json: {
+          success: true,
+          user: user.slice(:id, :name, :email, :api_key, :created_at, :updated_at)
+        }, status: :ok
+      else
+        render json: { success: false, error: "User not found" }, status: :not_found
+      end
     end
 
     private

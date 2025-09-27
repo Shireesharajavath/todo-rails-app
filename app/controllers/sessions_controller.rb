@@ -20,7 +20,7 @@ class SessionsController < ApplicationController
       render json: { success: false, error: "Invalid email or password" }, status: :unauthorized
     end
   end
-
+  
   # DELETE /logout (API only, optional)
   def destroy
     # API lo session use cheyyam → just dummy response
