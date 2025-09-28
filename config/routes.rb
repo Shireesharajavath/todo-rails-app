@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     post "login",       to: "users#login"        # API login
     post "get_api_key", to: "users#get_api_key"  # Generate/retrieve API key
     get  "me",          to: "users#me"           # Current authenticated user
+    post "logout",      to: "users#logout"       # ✅ API logout endpoint
 
     # ✅ RESTful todos (for API)
     resources :todos, only: [:index]

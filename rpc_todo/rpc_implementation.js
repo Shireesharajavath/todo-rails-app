@@ -1,39 +1,26 @@
 import axios from "axios";
 import { rpc } from "./rpc_config.js";
 
-/**************** TODOS RPCs ****************/
-
+// ✅ Fetch Todos
 rpc.register({
   name: "fetchTodos",
   arguments: {
-    api_key: { type: "string", required: true, description: "User API Key" },
-    page: { type: "number", required: false, description: "Page number" },
-    per_page: { type: "number", required: false, description: "Items per page" }
+    api_key: { type: "string", required: true },
+    page: { type: "number", required: false },
+    per_page: { type: "number", required: false }
   },
   implementation: async (args) => {
-    try {
-      const res = await axios.get("http://localhost:3000/api/todos", {
-        params: {
-          page: args.page || 1,
-          per_page: args.per_page || 10
-        },
-        headers: {
-          Authorization: `Bearer ${args.api_key}`
-        }
-      });
-
-      return {
-        success: true,
-        todos: res.data.todos,
-        pagination: res.data.pagination
-      };
-    } catch (err) {
-      return {
-        success: false,
-        error: err.response?.data || err.message
-      };
-    }
-  },
+    const res = await axios.get("http://localhost:3000/api/todos", {
+      params: {
+        page: args.page || 1,
+        per_page: args.per_page || 10
+      },
+      headers: {
+        Authorization: `Bearer ${args.api_key}`
+      }
+    });
+    return { todos: res.data.todos, total: res.data.total, page: res.data.page, per_page: res.data.per_page };
+  },      
 });
 
 // ✅ Create a Todo
@@ -41,7 +28,7 @@ rpc.register({
   name: "createTodo",
   arguments: {
     title: { type: "string", required: true },
-    description: { type: "string", required: true },
+    description: { type: "string" },
     priority: { type: "string" },
     status: { type: "string" },
     scheduled_time: { type: "string" },
@@ -62,9 +49,11 @@ rpc.register({
             expected_completion: args.expected_completion,
           },
         },
-        { headers: { Authorization: `Bearer ${args.api_key}` } }
+        {
+          headers: { Authorization: `Bearer ${args.api_key}` },
+        }
       );
-      return { success: true, todo: res.data };
+      return { success: true, createdTodo: res.data };
     } catch (err) {
       return { success: false, error: err.response?.data || err.message };
     }
@@ -152,6 +141,7 @@ rpc.register({
   },
 });
 
+// ✅ Signup
 rpc.register({
   name: "signup",
   arguments: {
@@ -182,7 +172,6 @@ rpc.register({
   },
 });
 
-
 // ✅ Get Users
 rpc.register({
   name: "getUsers",
@@ -201,11 +190,31 @@ rpc.register({
   },
 });
 
-// ✅ Logout (frontend-only)
 rpc.register({
   name: "logout",
-  arguments: {},
-  implementation: async () => {
-    return { success: true, message: "Logout successful (frontend only)" };
+  arguments: {
+    api_key: { type: "string", required: true }
+  },
+  implementation: async (args) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${args.api_key}` // ✅ use args
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Logout failed");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("[logout] RPC error:", error);
+      return { success: false, message: error.message };
+    }
   },
 });
+

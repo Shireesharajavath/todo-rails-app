@@ -1,9 +1,8 @@
-# app/controllers/api/users_controller.rb
 module Api
   class UsersController < ApplicationController
     # API endpoints don’t use session auth or CSRF
-    skip_before_action :authenticate_user, only: [:signup, :login, :get_api_key, :index, :create, :show]
-    skip_before_action :verify_authenticity_token, only: [:signup, :login, :get_api_key, :me, :index, :create, :show]
+    skip_before_action :authenticate_user, only: [:signup, :login, :get_api_key, :index, :create, :show, :logout]
+    skip_before_action :verify_authenticity_token, only: [:signup, :login, :get_api_key, :me, :index, :create, :show, :logout]
 
     # POST /api/signup
     def signup
@@ -107,6 +106,12 @@ module Api
       else
         render json: { success: false, error: "User not found" }, status: :not_found
       end
+    end
+
+    # ✅ POST /api/logout
+    def logout
+      reset_session
+      render json: { success: true, message: "Logout successful" }, status: :ok
     end
 
     private

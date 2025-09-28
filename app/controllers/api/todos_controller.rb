@@ -6,7 +6,7 @@ module Api
 
     # GET /api/todos
     def index
-      todos = current_user.todos.order(created_at: :desc)
+      todos = current_user.todos.order(created_at: :asc)
                           .page(params[:page] || 1)
                           .per(params[:per_page] || 10)
 
