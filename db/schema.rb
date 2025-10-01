@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_19_093310) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_01_053012) do
   create_table "todo_time_logs", force: :cascade do |t|
     t.integer "todo_id", null: false
     t.datetime "start_at", null: false
@@ -46,6 +46,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_093310) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
+    t.string "photo_url"
   end
 
   add_foreign_key "todo_time_logs", "todos"

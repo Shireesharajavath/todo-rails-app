@@ -1,7 +1,7 @@
 import axios from "axios";
 import { rpc } from "./rpc_config.js";
 
-// ✅ Fetch Todos
+
 rpc.register({
   name: "fetchTodos",
   arguments: {
@@ -19,11 +19,17 @@ rpc.register({
         Authorization: `Bearer ${args.api_key}`
       }
     });
-    return { todos: res.data.todos, total: res.data.total, page: res.data.page, per_page: res.data.per_page };
-  },      
+
+    return { 
+      todos: res.data.todos, 
+      totalRowCount: res.data.pagination.total_count,  
+      currentPage: res.data.pagination.current_page,   
+      perPage: args.per_page || 10
+    };
+  }
 });
 
-// ✅ Create a Todo
+
 rpc.register({
   name: "createTodo",
   arguments: {
@@ -60,7 +66,7 @@ rpc.register({
   },
 });
 
-// ✅ Update a Todo
+
 rpc.register({
   name: "updateTodo",
   arguments: {
@@ -96,7 +102,7 @@ rpc.register({
   },
 });
 
-// ✅ Delete a Todo
+
 rpc.register({
   name: "deleteTodo",
   arguments: {
@@ -115,9 +121,8 @@ rpc.register({
   },
 });
 
-/**************** AUTH RPCs ****************/
 
-// ✅ Login
+
 rpc.register({
   name: "login",
   arguments: {
@@ -141,7 +146,7 @@ rpc.register({
   },
 });
 
-// ✅ Signup
+
 rpc.register({
   name: "signup",
   arguments: {
@@ -172,7 +177,7 @@ rpc.register({
   },
 });
 
-// ✅ Get Users
+
 rpc.register({
   name: "getUsers",
   arguments: {
@@ -201,7 +206,7 @@ rpc.register({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${args.api_key}` // ✅ use args
+          "Authorization": `Bearer ${args.api_key}` 
         },
       });
 

@@ -1,9 +1,9 @@
 class SessionsController < ApplicationController
-  # Skip API authentication & CSRF for login
+  
   skip_before_action :authenticate_user, only: [:create]
   skip_before_action :verify_authenticity_token, only: [:create]
 
-  # POST /login (API only)
+ 
   def create
     email = params[:email].to_s.downcase.strip
     password = params[:password]
@@ -21,9 +21,9 @@ class SessionsController < ApplicationController
     end
   end
   
-  # DELETE /logout (API only, optional)
+ 
   def destroy
-    # API lo session use cheyyam → just dummy response
+    
     render json: { success: true, message: "Logged out" }, status: :ok
   end
 end

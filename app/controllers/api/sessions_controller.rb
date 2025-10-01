@@ -3,7 +3,7 @@ module Api
     skip_before_action :authenticate_user, only: [:create]
     skip_before_action :verify_authenticity_token, only: [:create]
 
-    # POST /api/login
+    
     def create
       email = params[:email].to_s.downcase.strip
       password = params[:password]
@@ -17,7 +17,7 @@ module Api
       end
     end
 
-    # DELETE /api/logout
+    
     def destroy
       render json: { success: true, message: "Logged out" }, status: :ok
     end

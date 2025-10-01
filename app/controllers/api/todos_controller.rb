@@ -1,10 +1,10 @@
-# app/controllers/api/todos_controller.rb
+
 module Api
   class TodosController < ApplicationController
     skip_before_action :verify_authenticity_token
     before_action :authenticate_user
 
-    # GET /api/todos
+   
     def index
       todos = current_user.todos.order(created_at: :asc)
                           .page(params[:page] || 1)
